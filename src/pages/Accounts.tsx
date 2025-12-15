@@ -81,7 +81,7 @@ const getGradientForColor = (color: string) => {
 
 export function Accounts() {
     const { user } = useAuth()
-    const { formatCurrency } = usePreferences()
+    const { formatCurrency, preferences } = usePreferences()
     const [loading, setLoading] = useState(true)
     const [accounts, setAccounts] = useState<Account[]>([])
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -141,7 +141,7 @@ export function Accounts() {
                 color: formData.color,
                 icon: formData.type,
                 is_active: formData.is_active,
-                currency: 'USD',
+                currency: preferences.currency,
             }
 
             if (editingAccount) {

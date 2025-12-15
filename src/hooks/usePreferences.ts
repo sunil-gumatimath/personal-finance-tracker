@@ -11,7 +11,7 @@ export interface Preferences {
 }
 
 const defaultPreferences: Preferences = {
-    currency: 'USD',
+    currency: 'INR',
     dateFormat: 'MM/dd/yyyy',
     notifications: true,
     emailAlerts: true,

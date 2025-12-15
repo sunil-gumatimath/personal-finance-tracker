@@ -2,36 +2,40 @@
 
 A comprehensive personal finance management application designed to help users track expenses, manage budgets, and achieve financial goals. Built with modern web technologies, this application offers a responsive and intuitive user interface for managing all aspects of personal finance.
 
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-06B6D4?logo=tailwindcss&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?logo=supabase&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?logo=vite&logoColor=white)
+
 ## Features
 
-- **Dashboard**: Real-time overview of financial health including total balance, monthly income, expenses, and net savings. Includes visual spending charts and category breakdowns.
-- **Transaction Management**: Record income, expenses, and transfers. Support for recurring transactions (daily, weekly, monthly, yearly) and CSV export.
-- **Budgeting**: Create and track monthly budgets per category with visual progress indicators and alerts (Safe, Approaching Limit, Over Budget).
-- **Financial Goals**: Set savings targets with deadlines and track contributions over time.
-- **Calendar View**: Monthly visualization of financial activities to track daily spending and income patterns.
-- **Account Management**: Support for multiple account types including Checking, Savings, Credit Cards, Investments, and Cash.
-- **Customizable Settings**:
-  - **Themes**: Light, Dark, and System modes.
-  - **Internationalization**: Support for multiple currencies (USD, EUR, GBP, JPY, INR).
-  - **Preferences**: Custom date formats and notification settings (Email, Push, Budget Alerts).
-- **Category Customization**: Flexible category system for organizing income and expenses.
-- **Security**: Secure authentication and Row Level Security (RLS) ensuring data privacy.
-- **Mobile-First**: Fully responsive design with Progressive Web App (PWA) support for native-like mobile experience and offline access.
+- **Dashboard** - Real-time overview of financial health including total balance, monthly income, expenses, and net savings with visual spending charts and category breakdowns
+- **Transaction Management** - Record income, expenses, and transfers with support for recurring transactions and CSV export
+- **Budgeting** - Create and track monthly budgets per category with visual progress indicators and alerts
+- **Financial Goals** - Set savings targets with deadlines and track contributions over time
+- **Calendar View** - Monthly visualization of financial activities to track daily spending patterns
+- **Account Management** - Support for multiple account types (Checking, Savings, Credit Cards, Investments, Cash)
+- **Customizable Settings** - Light/Dark/System themes, multiple currencies (USD, EUR, GBP, JPY, INR), and notification preferences
+- **Category Customization** - Flexible category system for organizing income and expenses
+- **Security** - Secure authentication with Row Level Security (RLS) ensuring data privacy
+- **Mobile-First** - Fully responsive design with Progressive Web App (PWA) support for offline access
 
 ## Tech Stack
 
-- **Frontend**: React 19, TypeScript, Vite
-- **Styling**: Tailwind CSS 4, Shadcn UI (Radix UI)
-- **State Management**: React Context API
-- **Routing**: React Router DOM 7
-- **Charts**: Recharts
-- **Backend**: Supabase (PostgreSQL, Authentication)
-- **Icons**: Lucide React
-- **PWA**: Vite PWA Plugin
+| Category | Technologies |
+|----------|-------------|
+| **Frontend** | React 19, TypeScript, Vite 7 |
+| **Styling** | Tailwind CSS 4, Shadcn UI (Radix UI) |
+| **State Management** | React Context API |
+| **Routing** | React Router DOM 7 |
+| **Charts** | Recharts |
+| **Backend** | Supabase (PostgreSQL, Authentication) |
+| **Icons** | Lucide React |
+| **PWA** | Vite PWA Plugin |
+| **Deployment** | Docker, Vercel |
 
 ## Prerequisites
-
-Before running this project locally, ensure you have the following installed:
 
 - Node.js (Latest LTS version recommended)
 - npm or bun
@@ -39,83 +43,108 @@ Before running this project locally, ensure you have the following installed:
 
 ## Installation
 
-1.  **Clone the repository**
+1. **Clone the repository**
 
-    ```bash
-    git clone <repository-url>
-    cd personal-finance-tracker
-    ```
+   ```bash
+   git clone <repository-url>
+   cd personal-finance-tracker
+   ```
 
-2.  **Install dependencies**
+2. **Install dependencies**
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
-3.  **Environment Setup**
+3. **Environment Setup**
 
-    Create a `.env` file in the root directory based on `.env.example`:
+   Create a `.env` file in the root directory:
 
-    ```bash
-    cp .env.example .env
-    ```
+   ```bash
+   cp .env.example .env
+   ```
 
-    Update the following variables with your Supabase credentials:
+   Update with your Supabase credentials:
 
-    ```env
-    VITE_SUPABASE_URL=your_supabase_project_url
-    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-    ```
+   ```env
+   VITE_SUPABASE_URL=your_supabase_project_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-4.  **Database Setup**
+4. **Database Setup**
 
-    - Log in to your Supabase dashboard.
-    - Navigate to the SQL Editor.
-    - Copy the contents of `supabase/database.sql` and run it. This will set up all necessary tables, policies, and functions.
-    - (Optional) Use the `seed_my_data()` function within the application or via SQL to populate demo data.
+   - Log in to your Supabase dashboard
+   - Navigate to the SQL Editor
+   - Copy the contents of `supabase/database.sql` and execute it
+   - This sets up all tables, RLS policies, and functions
 
 ## Development
 
-To start the development server:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`.
+The application will be available at `http://localhost:5173`
 
 ## Build
 
-To build the application for production:
+Build for production:
 
 ```bash
 npm run build
 ```
 
-To preview the production build:
+Preview the production build:
 
 ```bash
 npm run preview
 ```
 
+## Docker Deployment
+
+Build and run with Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+Or build the Docker image directly:
+
+```bash
+docker build -t personal-finance-tracker .
+docker run -p 80:80 personal-finance-tracker
+```
+
 ## Project Structure
 
-- `src/components`: Reusable UI components and layout elements.
-- `src/contexts`: React Context providers (AuthContext).
-- `src/pages`: Main application views (Dashboard, Transactions, Budgets, etc.).
-- `src/lib`: Utility functions and Supabase client configuration.
-- `src/types`: TypeScript definitions and interfaces.
-- `supabase`: Database schemas and SQL scripts.
+```
+src/
+├── components/       # Reusable UI components
+│   ├── dashboard/    # Dashboard-specific components
+│   ├── layout/       # Layout components (Sidebar, Header)
+│   └── ui/           # Shadcn UI components
+├── contexts/         # React Context providers
+├── hooks/            # Custom React hooks
+├── lib/              # Utilities and Supabase client
+├── pages/            # Main application views
+└── types/            # TypeScript definitions
+```
 
 ## Database Schema
 
-The application uses a relational database structure with the following key tables:
-
-- **profiles**: User information and preferences.
-- **accounts**: Financial accounts (bank, cash, etc.).
-- **categories**: Income and expense categories.
-- **transactions**: Financial records linked to accounts and categories.
-- **budgets**: Spending limits per category.
-- **goals**: Savings targets.
+| Table | Description |
+|-------|-------------|
+| `profiles` | User information and preferences |
+| `accounts` | Financial accounts (bank, cash, etc.) |
+| `categories` | Income and expense categories |
+| `transactions` | Financial records linked to accounts |
+| `budgets` | Spending limits per category |
+| `goals` | Savings targets |
 
 All tables are protected by Row Level Security (RLS) policies, ensuring users can only access their own data.
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).

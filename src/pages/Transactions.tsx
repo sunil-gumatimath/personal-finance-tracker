@@ -121,8 +121,6 @@ export function Transactions() {
         })
     }, [transactions, searchQuery, filterType])
 
-    // formatCurrency is now provided by usePreferences hook
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!user) return

@@ -1,37 +1,5 @@
 // Database types for Supabase
 
-export interface Database {
-    public: {
-        Tables: {
-            profiles: {
-                Row: Profile
-                Insert: Omit<Profile, 'id' | 'created_at' | 'updated_at'>
-                Update: Partial<Omit<Profile, 'id'>>
-            }
-            accounts: {
-                Row: Account
-                Insert: Omit<Account, 'id' | 'created_at' | 'updated_at'>
-                Update: Partial<Omit<Account, 'id'>>
-            }
-            categories: {
-                Row: Category
-                Insert: Omit<Category, 'id' | 'created_at'>
-                Update: Partial<Omit<Category, 'id'>>
-            }
-            transactions: {
-                Row: Transaction
-                Insert: Omit<Transaction, 'id' | 'created_at' | 'updated_at'>
-                Update: Partial<Omit<Transaction, 'id'>>
-            }
-            budgets: {
-                Row: Budget
-                Insert: Omit<Budget, 'id' | 'created_at' | 'updated_at'>
-                Update: Partial<Omit<Budget, 'id'>>
-            }
-        }
-    }
-}
-
 export interface Profile {
     id: string
     user_id: string

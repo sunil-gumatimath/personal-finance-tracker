@@ -230,8 +230,6 @@ export function Dashboard() {
         fetchDashboardData()
     }, [user])
 
-    // formatCurrency is now provided by usePreferences hook
-
     if (loading) {
         return (
             <div className="flex h-full items-center justify-center">

@@ -1,6 +1,7 @@
 import { useLocation, Link } from 'react-router-dom'
 import {
     LayoutDashboard,
+    Calendar,
     ArrowLeftRight,
     PiggyBank,
     Tags,
@@ -29,10 +30,11 @@ import { useAuth } from '@/contexts/AuthContext'
 const navItems = [
     { title: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { title: 'Transactions', icon: ArrowLeftRight, path: '/transactions' },
+    { title: 'Calendar', icon: Calendar, path: '/calendar' },
     { title: 'Budgets', icon: PiggyBank, path: '/budgets' },
     { title: 'Goals', icon: Target, path: '/goals' },
-    { title: 'Categories', icon: Tags, path: '/categories' },
     { title: 'Accounts', icon: Wallet, path: '/accounts' },
+    { title: 'Categories', icon: Tags, path: '/categories' },
 ]
 
 const bottomNavItems = [

@@ -12,6 +12,7 @@ import {
   Settings,
   Login,
   Signup,
+  Calendar,
 } from '@/pages'
 import { Toaster } from '@/components/ui/sonner'
 
@@ -84,6 +85,7 @@ function AppRoutes() {
       >
         <Route path="/" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
+        <Route path="/calendar" element={<Calendar />} />
         <Route path="/budgets" element={<Budgets />} />
         <Route path="/goals" element={<Goals />} />
         <Route path="/categories" element={<Categories />} />

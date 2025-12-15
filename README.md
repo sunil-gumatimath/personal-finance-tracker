@@ -5,13 +5,15 @@ A modern personal finance tracker built with React, TypeScript, Vite, and Supaba
 ## Features
 
 - 📊 **Dashboard** - Overview with stats and charts
-- 💳 **Transactions** - Track income and expenses with recurring transaction support
+- 💳 **Transactions** - Track income and expenses with recurring transaction support & **CSV Export**
+- 📅 **Calendar** - Visual monthly view of your finances
 - 🎯 **Budgets** - Set limits and track progress
-- � **Goals** - Financial goals with progress tracking and milestones
-- �🏷️ **Categories** - Custom organization
-- � **Accounts** - Manage multiple accounts
-- �🔐 **Authentication** - Secure Supabase Auth
+- 🏆 **Goals** - Financial goals with progress tracking and milestones
+- 🏷️ **Categories** - Custom organization
+- 💼 **Accounts** - Manage multiple accounts
+- 🔐 **Authentication** - Secure Supabase Auth
 - 🌓 **Dark Mode** - Light, dark, and system theme options
+- 📱 **PWA Support** - Installable on mobile/desktop with offline capabilities
 
 ## Getting Started
 

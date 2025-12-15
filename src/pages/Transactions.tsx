@@ -10,6 +10,7 @@ import {
     Pencil,
     Trash2,
     Repeat,
+    Download,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -203,6 +204,33 @@ export function Transactions() {
         })
     }
 
+    const handleExport = () => {
+        const headers = ['Type', 'Description', 'Category', 'Account', 'Date', 'Amount']
+        const csvContent = [
+            headers.join(','),
+            ...filteredTransactions.map(t => [
+                t.type,
+                `"${(t.description || '').replace(/"/g, '""')}"`,
+                `"${(t.category?.name || '').replace(/"/g, '""')}"`,
+                `"${(t.account?.name || '').replace(/"/g, '""')}"`,
+                t.date,
+                t.amount
+            ].join(','))
+        ].join('\n')
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+        const link = document.createElement('a')
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob)
+            link.setAttribute('href', url)
+            link.setAttribute('download', `transactions_${format(new Date(), 'yyyy-MM-dd')}.csv`)
+            link.style.visibility = 'hidden'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        }
+    }
+
     if (loading) {
         return (
             <div className="flex h-full items-center justify-center">
@@ -221,15 +249,21 @@ export function Transactions() {
                         Manage and track all your financial transactions
                     </p>
                 </div>
-                <Button
-                    onClick={() => {
-                        resetForm()
-                        setIsDialogOpen(true)
-                    }}
-                >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Transaction
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={handleExport}>
+                        <Download className="mr-2 h-4 w-4" />
+                        Export CSV
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            resetForm()
+                            setIsDialogOpen(true)
+                        }}
+                    >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Transaction
+                    </Button>
+                </div>
             </div>
 
             {/* Filters */}

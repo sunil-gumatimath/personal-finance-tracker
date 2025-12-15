@@ -20,6 +20,7 @@ import { useState } from 'react'
 const routeConfig: Record<string, { title: string; breadcrumb: string }> = {
     '/': { title: 'Dashboard', breadcrumb: 'Dashboard' },
     '/transactions': { title: 'Transactions', breadcrumb: 'Transactions' },
+    '/calendar': { title: 'Calendar', breadcrumb: 'Calendar' },
     '/budgets': { title: 'Budgets', breadcrumb: 'Budgets' },
     '/goals': { title: 'Savings Goals', breadcrumb: 'Goals' },
     '/categories': { title: 'Categories', breadcrumb: 'Categories' },

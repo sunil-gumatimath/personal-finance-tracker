@@ -13,6 +13,7 @@ A modern personal finance management application built with React 19, TypeScript
 - Savings goals with progress monitoring
 - Secure authentication powered by Supabase
 - Responsive design with dark mode support
+- Currency support (Default: Rupees ₹, customizable)
 - CSV export functionality for data portability
 - Progressive Web App (PWA) capabilities
 - Docker containerization for production deployment
@@ -67,7 +68,7 @@ A modern personal finance management application built with React 19, TypeScript
 
 1. Build and run with Docker Compose:
    ```bash
-   docker-compose up --build -d
+   docker compose up --build -d
    ```
 
 2. Access the application at `http://localhost:8080`

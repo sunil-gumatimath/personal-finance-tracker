@@ -1,6 +1,6 @@
-# Personal Finance Tracker
+# FinanceTrack
 
-A comprehensive personal finance management application designed to help users track expenses, manage budgets, and achieve financial goals. Built with modern web technologies, this application offers a responsive and intuitive user interface for managing all aspects of personal finance.
+A comprehensive personal finance management application designed to help users track expenses, manage budgets, and achieve financial goals. Built with modern web technologies for a responsive and intuitive user experience.
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
@@ -12,11 +12,12 @@ A comprehensive personal finance management application designed to help users t
 
 - **Dashboard** - Real-time overview of financial health including total balance, monthly income, expenses, and net savings with visual spending charts and category breakdowns
 - **Transaction Management** - Record income, expenses, and transfers with support for recurring transactions and CSV export
-- **Budgeting** - Create and track monthly budgets per category with visual progress indicators and alerts
+- **Budgeting** - Create and track budgets per category with visual progress indicators and alerts
 - **Financial Goals** - Set savings targets with deadlines and track contributions over time
 - **Calendar View** - Monthly visualization of financial activities to track daily spending patterns
 - **Account Management** - Support for multiple account types (Checking, Savings, Credit Cards, Investments, Cash)
-- **Customizable Settings** - Light/Dark/System themes, multiple currencies (USD, EUR, GBP, JPY, INR), and notification preferences
+- **Category Customization** - Flexible category system for organizing income and expenses
+- **Customizable Settings** - Light/Dark/System themes, multiple currencies (USD, EUR, GBP, JPY, INR), date formats, and notification preferences
 - **Category Customization** - Flexible category system for organizing income and expenses
 - **Security** - Secure authentication with Row Level Security (RLS) ensuring data privacy
 - **Mobile-First** - Fully responsive design with Progressive Web App (PWA) support for offline access
@@ -45,10 +46,10 @@ A comprehensive personal finance management application designed to help users t
 
 1. **Clone the repository**
 
-   ```bash
-   git clone <repository-url>
-   cd personal-finance-tracker
-   ```
+    ```bash
+    git clone <repository-url>
+    cd finance-track
+    ```
 
 2. **Install dependencies**
 
@@ -73,10 +74,11 @@ A comprehensive personal finance management application designed to help users t
 
 4. **Database Setup**
 
-   - Log in to your Supabase dashboard
-   - Navigate to the SQL Editor
-   - Copy the contents of `supabase/database.sql` and execute it
-   - This sets up all tables, RLS policies, and functions
+    - Log in to your Supabase dashboard
+    - Navigate to the SQL Editor
+    - Copy the contents of `supabase/database.sql` and execute it
+    - This sets up all tables, RLS policies, and functions
+    - After signing up in the app, run `SELECT seed_my_data();` in the SQL Editor to populate demo data
 
 ## Development
 
@@ -110,11 +112,13 @@ Build and run with Docker Compose:
 docker-compose up --build
 ```
 
+The application will be available at `http://localhost:8080`
+
 Or build the Docker image directly:
 
 ```bash
-docker build -t personal-finance-tracker .
-docker run -p 80:80 personal-finance-tracker
+docker build -t finance-track .
+docker run -p 8080:80 finance-track
 ```
 
 ## Project Structure
@@ -136,12 +140,12 @@ src/
 
 | Table | Description |
 |-------|-------------|
-| `profiles` | User information and preferences |
-| `accounts` | Financial accounts (bank, cash, etc.) |
-| `categories` | Income and expense categories |
-| `transactions` | Financial records linked to accounts |
-| `budgets` | Spending limits per category |
-| `goals` | Savings targets |
+| `profiles` | User information, preferences, and currency settings |
+| `accounts` | Financial accounts (checking, savings, credit cards, investments, cash) |
+| `categories` | Income and expense categories with customizable colors and icons |
+| `transactions` | Financial records with support for recurring transactions |
+| `budgets` | Spending limits per category with configurable periods |
+| `goals` | Savings targets with progress tracking |
 
 All tables are protected by Row Level Security (RLS) policies, ensuring users can only access their own data.
 

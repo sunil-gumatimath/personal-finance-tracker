@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { useAuth } from '@/contexts/AuthContext'
+import { Logo } from '@/components/ui/Logo'
 
 export function Login() {
     const navigate = useNavigate()
@@ -40,26 +41,7 @@ export function Login() {
             <div className="w-full max-w-md space-y-8">
                 {/* Logo */}
                 <div className="flex flex-col items-center">
-                    <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 dark:bg-slate-950 shadow-2xl overflow-hidden group/logo border border-primary/20 dark:border-white/10">
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 dark:from-slate-900 dark:via-slate-950 dark:to-black" />
-                        <svg viewBox="0 0 24 24" fill="none" className="h-10 w-10 relative z-10 transition-all duration-500 group-hover/logo:scale-110">
-                            {/* Growth Bars */}
-                            <rect x="4" y="14" width="3" height="6" rx="1" fill="currentColor" className="text-emerald-500/40 dark:text-emerald-500/30" />
-                            <rect x="10.5" y="10" width="3" height="10" rx="1" fill="currentColor" className="text-emerald-500/70 dark:text-emerald-500/60" />
-                            <rect x="17" y="4" width="3" height="16" rx="1" fill="currentColor" className="text-emerald-500 dark:text-emerald-400" />
-                            {/* Trend Line */}
-                            <path d="M4 14L10.5 10L17 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-primary dark:text-white opacity-40 group-hover/logo:opacity-100 transition-opacity" />
-                        </svg>
-                        <div className="absolute -inset-1 bg-emerald-500/10 blur-xl opacity-0 group-hover/logo:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="mt-4 flex flex-col items-center">
-                        <span className="text-lg font-black tracking-[0.2em] text-foreground uppercase">
-                            Personal Finance
-                        </span>
-                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-widest mt-1">
-                            Tracker
-                        </span>
-                    </div>
+                    <Logo size="lg" showText={true} vertical={true} />
                 </div>
 
                 {/* Login Card */}

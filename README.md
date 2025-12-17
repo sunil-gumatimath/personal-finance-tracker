@@ -86,5 +86,4 @@ docker-compose up --build
 The application will be accessible at `http://localhost:8080`.
 
 ## License
-
-This project is licensed under the MIT License.
+This project is free and open-source software licensed under the MIT License.

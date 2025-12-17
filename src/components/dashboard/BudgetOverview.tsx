@@ -1,8 +1,8 @@
-import { PieChart, Pie, Cell } from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Pie, PieChart, Label } from 'recharts'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { usePreferences } from '@/hooks/usePreferences'
 import type { SpendingByCategory } from '@/types'
-import { TrendingDown, Sparkles } from 'lucide-react'
+import { PieChartIcon, TrendingDown } from 'lucide-react'
 import {
     type ChartConfig,
     ChartContainer,
@@ -15,56 +15,50 @@ interface BudgetOverviewProps {
 }
 
 const COLORS = [
-    '#f43f5e', // rose
-    '#10b981', // emerald
-    '#3b82f6', // blue
-    '#f59e0b', // amber
-    '#8b5cf6', // violet
-    '#06b6d4', // cyan
-    '#ec4899', // pink
-    '#84cc16', // lime
+    'hsl(220 13% 13%)',      // Dark charcoal (like in image)
+    'hsl(220 10% 35%)',      // Medium gray
+    'hsl(220 8% 50%)',       // Light gray
+    'hsl(346.8 77.2% 49.8%)', // Rose
+    'hsl(142.1 76.2% 36.3%)', // Green
+    'hsl(221.2 83.2% 53.3%)', // Blue
 ]
 
 export function BudgetOverview({ spendingByCategory }: BudgetOverviewProps) {
     const { formatCurrency } = usePreferences()
 
-    // Calculate total spending
     const totalSpending = spendingByCategory.reduce((sum, cat) => sum + cat.amount, 0)
+    const topCategory = spendingByCategory[0]
+    const topPercentage = topCategory ? Math.round(topCategory.percentage) : 0
 
-    // Create chart config from data
-    const chartConfig = spendingByCategory.reduce((acc, cat, index) => {
-        acc[cat.category] = {
-            label: cat.category,
-            color: cat.color || COLORS[index % COLORS.length]
-        }
-        return acc
-    }, {} as ChartConfig)
+    const chartData = spendingByCategory.slice(0, 5).map((cat, index) => ({
+        category: cat.category,
+        amount: cat.amount,
+        fill: cat.color || COLORS[index % COLORS.length],
+    }))
+
+    const chartConfig = {
+        amount: { label: 'Amount' },
+        ...spendingByCategory.reduce((acc, cat, index) => {
+            acc[cat.category] = {
+                label: cat.category,
+                color: cat.color || COLORS[index % COLORS.length]
+            }
+            return acc
+        }, {} as ChartConfig)
+    } satisfies ChartConfig
 
     if (spendingByCategory.length === 0) {
         return (
-            <Card className="border border-border/50 bg-card/50 backdrop-blur-xl shadow-xl h-full overflow-hidden relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent" />
-                <CardHeader className="relative pb-2">
-                    <div className="flex items-center gap-4">
-                        <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-sm transition-transform group-hover:scale-110">
-                            <TrendingDown className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <CardTitle className="text-lg font-black tracking-tight">Spending Flow</CardTitle>
-                            <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/80">Category Analysis</p>
-                        </div>
-                    </div>
+            <Card className="h-full flex flex-col">
+                <CardHeader className="items-center pb-0">
+                    <CardTitle>Spending Flow</CardTitle>
+                    <CardDescription>Category breakdown</CardDescription>
                 </CardHeader>
-                <CardContent className="relative flex flex-col items-center justify-center py-20 text-center">
-                    <div className="relative mb-6">
-                        <div className="absolute inset-0 bg-primary/10 blur-[30px] rounded-full scale-150" />
-                        <div className="relative p-5 rounded-2xl bg-secondary border border-border/50 shadow-inner text-muted-foreground/40">
-                            <Sparkles className="h-10 w-10" />
-                        </div>
-                    </div>
-                    <h3 className="text-base font-black tracking-tight mb-1">No output detected</h3>
-                    <p className="text-xs text-muted-foreground max-w-[200px] leading-relaxed">
-                        Execute some transactions to see your financial distribution.
+                <CardContent className="flex-1 flex flex-col items-center justify-center py-16 text-center">
+                    <PieChartIcon className="h-12 w-12 text-muted-foreground/40 mb-4" />
+                    <p className="text-sm font-medium">No spending data</p>
+                    <p className="text-xs text-muted-foreground">
+                        Add transactions to see your spending breakdown.
                     </p>
                 </CardContent>
             </Card>
@@ -72,116 +66,70 @@ export function BudgetOverview({ spendingByCategory }: BudgetOverviewProps) {
     }
 
     return (
-        <Card className="border border-border/50 bg-card/50 backdrop-blur-xl shadow-xl h-full flex flex-col overflow-hidden relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent" />
-            <CardHeader className="relative pb-2">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-sm transition-transform group-hover:scale-110">
-                            <TrendingDown className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <CardTitle className="text-lg font-black tracking-tight">Spending Flow</CardTitle>
-                            <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/80">Category Analysis</p>
-                        </div>
-                    </div>
-                </div>
+        <Card className="h-full flex flex-col">
+            <CardHeader className="items-center pb-0">
+                <CardTitle>Spending Flow</CardTitle>
+                <CardDescription>This month's expenses</CardDescription>
             </CardHeader>
-            <CardContent className="relative flex-1 flex flex-col pt-4">
-                <div className="relative h-[180px] mb-8 w-full">
-                    <ChartContainer config={chartConfig} className="h-full w-full">
-                        <PieChart>
-                            <ChartTooltip
-                                cursor={false}
-                                content={<ChartTooltipContent
-                                    hideLabel
-                                    formatter={(value, name) => (
-                                        <div className="flex items-center justify-between w-full">
-                                            <span className="text-muted-foreground mr-6 uppercase text-[10px] font-bold tracking-wider">{name}</span>
-                                            <span className="text-foreground font-black">
-                                                {formatCurrency(Number(value))}
-                                            </span>
-                                        </div>
-                                    )}
-                                />}
+            <CardContent className="flex-1 pb-0">
+                <ChartContainer
+                    config={chartConfig}
+                    className="mx-auto aspect-square max-h-[250px]"
+                >
+                    <PieChart>
+                        <ChartTooltip
+                            cursor={false}
+                            content={<ChartTooltipContent hideLabel />}
+                        />
+                        <Pie
+                            data={chartData}
+                            dataKey="amount"
+                            nameKey="category"
+                            innerRadius={60}
+                            strokeWidth={5}
+                        >
+                            <Label
+                                content={({ viewBox }) => {
+                                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                        return (
+                                            <text
+                                                x={viewBox.cx}
+                                                y={viewBox.cy}
+                                                textAnchor="middle"
+                                                dominantBaseline="middle"
+                                            >
+                                                <tspan
+                                                    x={viewBox.cx}
+                                                    y={viewBox.cy}
+                                                    className="fill-foreground text-3xl font-bold"
+                                                >
+                                                    {topPercentage}%
+                                                </tspan>
+                                                <tspan
+                                                    x={viewBox.cx}
+                                                    y={(viewBox.cy || 0) + 24}
+                                                    className="fill-muted-foreground"
+                                                >
+                                                    {topCategory?.category || 'Spent'}
+                                                </tspan>
+                                            </text>
+                                        )
+                                    }
+                                }}
                             />
-                            <Pie
-                                data={spendingByCategory}
-                                dataKey="amount"
-                                nameKey="category"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80}
-                                innerRadius={55}
-                                strokeWidth={0}
-                                paddingAngle={4}
-                            >
-                                {spendingByCategory.map((entry, index) => (
-                                    <Cell
-                                        key={`cell-${index}`}
-                                        fill={entry.color || COLORS[index % COLORS.length]}
-                                        className="transition-all duration-300 hover:opacity-80 outline-none"
-                                    />
-                                ))}
-                            </Pie>
-                        </PieChart>
-                    </ChartContainer>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">TOTAL</p>
-                        <p className="text-xl font-black text-foreground tabular-nums tracking-tighter">{formatCurrency(totalSpending)}</p>
-                    </div>
-                </div>
-
-                <div className="space-y-3 flex-1">
-                    {spendingByCategory.slice(0, 4).map((category, index) => {
-                        const color = category.color || COLORS[index % COLORS.length]
-                        return (
-                            <div
-                                key={category.category}
-                                className="group/item flex items-center gap-4 p-3 rounded-2xl hover:bg-muted/50 transition-all duration-300 cursor-default"
-                            >
-                                <div
-                                    className="w-3 h-3 rounded-full shrink-0 shadow-lg relative"
-                                    style={{
-                                        backgroundColor: color,
-                                        boxShadow: `0 0 12px ${color}30`
-                                    }}
-                                >
-                                    <div className="absolute inset-0 rounded-full bg-inherit animate-ping opacity-20 group-hover/item:opacity-40 transition-opacity" />
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-black truncate text-foreground/80 group-hover/item:text-foreground transition-colors uppercase tracking-tight">
-                                        {category.category}
-                                    </p>
-                                    <div className="w-full h-1 bg-muted rounded-full mt-2 overflow-hidden">
-                                        <div
-                                            className="h-full bg-inherit rounded-full transition-all duration-1000"
-                                            style={{
-                                                backgroundColor: color,
-                                                width: `${category.percentage}%`
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="text-right shrink-0">
-                                    <p className="text-sm font-black tabular-nums text-foreground">{formatCurrency(category.amount)}</p>
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{category.percentage.toFixed(0)}%</p>
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
-
-                {spendingByCategory.length > 4 && (
-                    <div className="mt-auto pt-4 flex justify-center">
-                        <div className="px-4 py-1.5 rounded-full bg-secondary text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-                            + {spendingByCategory.length - 4} ADDITIONAL UNITS
-                        </div>
-                    </div>
-                )}
+                        </Pie>
+                    </PieChart>
+                </ChartContainer>
             </CardContent>
+            <CardFooter className="flex-col gap-2 text-sm">
+                <div className="flex items-center gap-2 font-medium leading-none">
+                    <TrendingDown className="h-4 w-4" />
+                    Total spent: {formatCurrency(totalSpending)}
+                </div>
+                <div className="leading-none text-muted-foreground">
+                    Showing top {chartData.length} categories
+                </div>
+            </CardFooter>
         </Card>
     )
 }

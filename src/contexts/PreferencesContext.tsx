@@ -1,38 +1,11 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
-
-const PREFERENCES_KEY = 'financetrack_preferences'
-
-export interface Preferences {
-    currency: string
-    dateFormat: string
-    notifications: boolean
-    emailAlerts: boolean
-    budgetAlerts: boolean
-}
-
-const defaultPreferences: Preferences = {
-    currency: 'INR',
-    dateFormat: 'MM/dd/yyyy',
-    notifications: true,
-    emailAlerts: true,
-    budgetAlerts: true,
-}
-
-const currencySymbols: Record<string, string> = {
-    USD: '$',
-    EUR: '€',
-    GBP: '£',
-    INR: '₹',
-    JPY: '¥',
-}
-
-const currencyLocales: Record<string, string> = {
-    USD: 'en-US',
-    EUR: 'de-DE',
-    GBP: 'en-GB',
-    INR: 'en-IN',
-    JPY: 'ja-JP',
-}
+import {
+    type Preferences,
+    PREFERENCES_KEY,
+    defaultPreferences,
+    currencySymbols,
+    currencyLocales
+} from '@/types/preferences'
 
 interface PreferencesContextType {
     preferences: Preferences
@@ -112,6 +85,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function usePreferences() {
     const context = useContext(PreferencesContext)
     if (context === undefined) {

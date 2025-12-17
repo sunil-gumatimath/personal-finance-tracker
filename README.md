@@ -1,4 +1,4 @@
-# Antigravity Finance
+# Finance Tracker
 
 A premium, high-performance personal finance management OS designed for clarity and growth. Antigravity helps users track expenses, manage portfolios, and achieve financial goals with a focus on sophisticated design and intuitive user experience.
 

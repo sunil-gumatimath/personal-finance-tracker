@@ -214,11 +214,11 @@ ALWAYS format all monetary values using ${currency} symbol and format. For examp
             } else {
                 throw new Error('No response received. Please check your API key.')
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Chat error:', error)
-            const errorMessage = error.message?.includes('API key')
+            const errorMessage = error instanceof Error && error.message?.includes('API key')
                 ? 'Invalid API key. Please check your Gemini API key in Settings.'
-                : error.message || 'Something went wrong. Please try again.'
+                : (error instanceof Error ? error.message : 'Something went wrong. Please try again.')
 
             setMessages(prev => [...prev, {
                 role: 'assistant',

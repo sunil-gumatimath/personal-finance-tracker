@@ -144,8 +144,8 @@ export function useAIInsights() {
                     const aiResponse = await generateFinancialAdvice(prompt, preferences.geminiApiKey)
                     if (aiResponse) {
                         const cleaned = aiResponse.replace(/```json/g, '').replace(/```/g, '').trim()
-                        const aiInsights = JSON.parse(cleaned)
-                        aiInsights.forEach((insight: any, index: number) => {
+                        const aiInsights = JSON.parse(cleaned) as Array<{ type: 'coaching' | 'kudo'; title: string; description: string }>
+                        aiInsights.forEach((insight, index) => {
                             newInsights.push({
                                 id: `ai-${index}-${Date.now()}`,
                                 ...insight

@@ -40,6 +40,25 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      'lucide-react',
+      '@radix-ui/react-avatar',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-label',
+      '@radix-ui/react-progress',
+      '@radix-ui/react-select',
+      '@radix-ui/react-separator',
+      '@radix-ui/react-slot',
+      '@radix-ui/react-switch',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-tooltip',
+    ],
+  },
   build: {
     chunkSizeWarningLimit: 600,
     rollupOptions: {
@@ -67,17 +86,12 @@ export default defineConfig({
           if (id.includes('date-fns')) {
             return 'date-vendor';
           }
-          // UI components (Radix)
+          // UI components (Radix) - keep separate from utils
           if (id.includes('@radix-ui')) {
             return 'ui-vendor';
           }
-          // Other common utilities
-          if (id.includes('lucide-react') ||
-            id.includes('class-variance-authority') ||
-            id.includes('clsx') ||
-            id.includes('tailwind-merge')) {
-            return 'utils-vendor';
-          }
+          // Note: Removed utils-vendor to prevent bundling issues
+          // lucide-react and other utils will be in the main bundle
         },
       },
     },

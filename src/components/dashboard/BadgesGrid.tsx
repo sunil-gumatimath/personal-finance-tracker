@@ -21,7 +21,7 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
                 <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Achievements</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 h-full">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 h-full">
                     {badges.map((badge) => {
                         const Icon = ICON_MAP[badge.icon] || Star
                         return (

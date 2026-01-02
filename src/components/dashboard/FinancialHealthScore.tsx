@@ -1,4 +1,3 @@
-import { Pie, PieChart, Label, ResponsiveContainer, Cell } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import type { FinancialHealth } from '@/hooks/useFinancialHealth'
 import { Activity, ShieldCheck, PieChartIcon, TrendingUp, Lightbulb, ChevronRight } from 'lucide-react'
@@ -41,16 +40,19 @@ export function FinancialHealthScore({ data, loading }: FinancialHealthScoreProp
 
     const { score, savingsRate, budgetAdherence, emergencyFundProgress, nextSteps } = data
 
-    const chartData = [
-        { name: 'Score', value: score },
-        { name: 'Remaining', value: 100 - score },
-    ]
-
     const getScoreColor = (s: number) => {
         if (s >= 80) return 'text-emerald-500'
-        if (s >= 60) return 'text-primary'
+        if (s >= 60) return 'text-blue-500'
         if (s >= 40) return 'text-amber-500'
         return 'text-rose-500'
+    }
+
+    // Get the fill color for the gauge arc
+    const getGaugeFillColor = (s: number) => {
+        if (s >= 80) return 'hsl(142.1, 76.2%, 36.3%)' // emerald-500
+        if (s >= 60) return 'hsl(217.2, 91.2%, 59.8%)' // blue-500
+        if (s >= 40) return 'hsl(37.7, 92.1%, 50.2%)'  // amber-500
+        return 'hsl(346.8, 77.2%, 49.8%)'             // rose-500
     }
 
     const getScoreStatus = (s: number) => {
@@ -60,18 +62,32 @@ export function FinancialHealthScore({ data, loading }: FinancialHealthScoreProp
         return 'Needs Attention'
     }
 
+    // Get badge background styling based on score
+    const getScoreBadgeStyle = (s: number) => {
+        if (s >= 80) return 'bg-emerald-500/10 border-emerald-500/30'
+        if (s >= 60) return 'bg-blue-500/10 border-blue-500/30'
+        if (s >= 40) return 'bg-amber-500/10 border-amber-500/30'
+        return 'bg-rose-500/10 border-rose-500/30'
+    }
+
     return (
         <>
-            <Card className="h-full border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden group flex flex-col">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
+            <Card className="h-full border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden group flex flex-col relative">
+                {/* Dynamic gradient overlay based on score */}
+                <div
+                    className="absolute inset-0 pointer-events-none opacity-50"
+                    style={{
+                        background: `linear-gradient(135deg, ${getGaugeFillColor(score)}10 0%, transparent 50%)`
+                    }}
+                />
 
                 <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                            <Activity className="h-4 w-4 text-primary" />
+                            <Activity className={cn("h-4 w-4", getScoreColor(score))} />
                             Health Score
                         </CardTitle>
-                        <span className={cn("text-[10px] font-black px-2 py-0.5 rounded-full border border-border/50", getScoreColor(score))}>
+                        <span className={cn("text-[10px] font-black px-2 py-0.5 rounded-full border", getScoreColor(score), getScoreBadgeStyle(score))}>
                             {getScoreStatus(score)}
                         </span>
                     </div>
@@ -80,81 +96,72 @@ export function FinancialHealthScore({ data, loading }: FinancialHealthScoreProp
                 <CardContent className="flex-1">
                     <div className="flex flex-col items-center">
                         <div
-                            className="relative h-[200px] w-full cursor-pointer hover:scale-105 transition-transform duration-300"
+                            className="relative h-[180px] w-full flex items-center justify-center cursor-pointer"
                             onClick={() => setOpen(true)}
                         >
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={chartData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={80}
-                                        startAngle={225}
-                                        endAngle={-45}
-                                        dataKey="value"
-                                        cornerRadius={10}
-                                        strokeWidth={0}
-                                    >
-                                        <Cell key="score" fill="hsl(var(--primary))" />
-                                        <Cell key="remaining" fill="hsl(var(--muted)/0.2)" />
+                            {/* Minimal Donut Chart */}
+                            <svg viewBox="0 0 120 120" className="w-[160px] h-[160px]">
+                                {/* Background track */}
+                                <circle
+                                    cx="60"
+                                    cy="60"
+                                    r="50"
+                                    fill="none"
+                                    stroke="hsl(var(--muted))"
+                                    strokeWidth="10"
+                                    opacity="0.2"
+                                />
 
-                                        <Label
-                                            content={({ viewBox }) => {
-                                                if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                                                    return (
-                                                        <text
-                                                            x={viewBox.cx}
-                                                            y={viewBox.cy}
-                                                            textAnchor="middle"
-                                                            dominantBaseline="middle"
-                                                        >
-                                                            <tspan
-                                                                x={viewBox.cx}
-                                                                y={(viewBox.cy || 0) + 2}
-                                                                className={cn("text-5xl font-black fill-foreground tracking-tighter", getScoreColor(score))}
-                                                            >
-                                                                {score}
-                                                            </tspan>
-                                                            <tspan
-                                                                x={viewBox.cx}
-                                                                y={(viewBox.cy || 0) + 28}
-                                                                className="fill-muted-foreground text-[10px] font-bold uppercase tracking-widest"
-                                                            >
-                                                                / 100
-                                                            </tspan>
-                                                        </text>
-                                                    )
-                                                }
-                                            }}
-                                        />
-                                    </Pie>
-                                </PieChart>
-                            </ResponsiveContainer>
-                            <div className="absolute inset-x-0 bottom-0 text-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span className="text-[10px] font-bold text-primary uppercase tracking-wider bg-background/80 px-2 py-1 rounded-full border border-primary/20">Click for details</span>
-                            </div>
+                                {/* Score arc */}
+                                <circle
+                                    cx="60"
+                                    cy="60"
+                                    r="50"
+                                    fill="none"
+                                    stroke={getGaugeFillColor(score)}
+                                    strokeWidth="10"
+                                    strokeLinecap="round"
+                                    strokeDasharray={`${(score / 100) * 314.16} 314.16`}
+                                    transform="rotate(-90 60 60)"
+                                />
+
+                                {/* Score text */}
+                                <text
+                                    x="60"
+                                    y="55"
+                                    textAnchor="middle"
+                                    dominantBaseline="middle"
+                                    className="text-3xl font-black"
+                                    style={{ fill: getGaugeFillColor(score) }}
+                                >
+                                    {score}
+                                </text>
+                                <text
+                                    x="60"
+                                    y="75"
+                                    textAnchor="middle"
+                                    className="fill-muted-foreground text-[8px] font-medium uppercase tracking-wide"
+                                >
+                                    out of 100
+                                </text>
+                            </svg>
                         </div>
 
-                        <div className="w-full space-y-5 px-2 pb-2">
+                        <div className="w-full space-y-4 px-2 pb-2">
                             <MetricBar
                                 icon={TrendingUp}
                                 label="Savings Rate"
                                 value={Math.round(savingsRate * 100)}
-                                color="bg-emerald-500"
                             />
                             <MetricBar
                                 icon={PieChartIcon}
                                 label="Budget Adherence"
                                 value={Math.round(budgetAdherence * 100)}
-                                color="bg-primary"
                             />
                             <MetricBar
                                 icon={ShieldCheck}
                                 label="Emergency Fund"
                                 value={Math.round(emergencyFundProgress * 100)}
-                                color="bg-blue-500"
                             />
                         </div>
                     </div>
@@ -228,23 +235,36 @@ interface MetricBarProps {
     icon: React.ElementType
     label: string
     value: number
-    color: string
 }
 
-function MetricBar({ icon: Icon, label, value, color }: MetricBarProps) {
+// Get dynamic color based on metric value
+function getMetricColor(value: number) {
+    if (value >= 80) return { bar: 'bg-emerald-500', icon: 'text-emerald-500', text: 'text-emerald-500' }
+    if (value >= 50) return { bar: 'bg-blue-500', icon: 'text-blue-500', text: 'text-blue-500' }
+    if (value >= 25) return { bar: 'bg-amber-500', icon: 'text-amber-500', text: 'text-amber-500' }
+    return { bar: 'bg-rose-500', icon: 'text-rose-500', text: 'text-rose-500' }
+}
+
+function MetricBar({ icon: Icon, label, value }: MetricBarProps) {
+    const colors = getMetricColor(value)
+
     return (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
             <div className="flex items-center justify-between text-[11px] font-bold uppercase text-muted-foreground tracking-wider">
                 <div className="flex items-center gap-2">
-                    <Icon className="h-3.5 w-3.5" />
+                    <Icon className={cn("h-3.5 w-3.5 transition-colors", colors.icon)} />
                     {label}
                 </div>
-                <span className="text-foreground font-black">{Math.min(100, value)}%</span>
+                <span className={cn("font-black transition-colors", colors.text)}>{Math.min(100, value)}%</span>
             </div>
-            <div className="h-2 w-full bg-muted/30 rounded-full overflow-hidden">
+            <div className="h-2.5 w-full bg-muted/30 rounded-full overflow-hidden border border-border/30">
                 <div
-                    className={cn("h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(0,0,0,0.1)]", color)}
-                    style={{ width: `${Math.min(100, value)}%` }}
+                    className={cn(
+                        "h-full rounded-full transition-all duration-1000 ease-out",
+                        colors.bar,
+                        value > 0 && "shadow-[0_0_8px_rgba(0,0,0,0.2)]"
+                    )}
+                    style={{ width: `${Math.min(100, Math.max(value > 0 ? 3 : 0, value))}%` }}
                 />
             </div>
         </div>

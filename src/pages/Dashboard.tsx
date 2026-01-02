@@ -366,7 +366,7 @@ export function Dashboard() {
             </div>
 
             {/* Financial Health & Gamification Row */}
-            <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-[3fr_7fr]">
+            <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-[2fr_3fr]">
                 <FinancialHealthScore data={healthData} loading={healthLoading} />
                 <BadgesGrid badges={healthData?.badges || []} />
             </div>

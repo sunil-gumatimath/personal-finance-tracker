@@ -56,7 +56,7 @@ A premium, AI-powered personal finance management platform designed for clarity 
 | Routing | React Router DOM 7 |
 | Charts | Shadcn UI Charts (Recharts) |
 | AI Integration | Google Gemini 1.5 Flash, React Markdown |
-| Backend | Supabase (PostgreSQL, Auth, RLS) |
+| Backend | Neon (PostgreSQL) |
 | Icons | Lucide React, Hugeicons |
 | Runtime | Bun |
 | PWA | Vite PWA Plugin |
@@ -92,7 +92,7 @@ A premium, AI-powered personal finance management platform designed for clarity 
 ## Prerequisites
 
 - Bun (Latest version)
-- A Supabase account
+- A Neon account
 
 ## Quick Start
 
@@ -111,14 +111,26 @@ A premium, AI-powered personal finance management platform designed for clarity 
 
    Create a `.env` file in the root directory:
    ```env
-   VITE_SUPABASE_URL=your_supabase_project_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   VITE_NEON_DATABASE_URL=your_neon_database_url
+   VITE_USE_NEON=true
    ```
 
 4. **Database Setup:**
-   - Create a new project in [Supabase](https://supabase.com)
-   - Execute `supabase/database.sql` in your Supabase SQL Editor
+   - Create a new project in [Neon](https://neon.tech)
+   - Run the setup script to get your connection string:
+     ```bash
+     ./scripts/setup-neon-project.sh
+     ```
+   - Execute `database/database-neon.sql` in your Neon SQL Editor
    - After your first login, run `SELECT seed_my_data();` to populate demo data
+
+   **For existing Supabase users migrating to Neon:**
+   - Keep your existing Supabase credentials temporarily
+   - Set up Neon as described above
+   - Run the migration script:
+     ```bash
+     bun run scripts/migrate-to-neon.ts
+     ```
 
 5. **AI Integration (Optional):**
    - Visit [Google AI Studio](https://aistudio.google.com)
@@ -182,8 +194,8 @@ The project is optimized for deployment on Vercel:
 1. Push your code to GitHub
 2. Import the repository in [Vercel](https://vercel.com)
 3. Configure environment variables:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_NEON_DATABASE_URL`
+   - `VITE_USE_NEON=true`
 4. Deploy with Bun runtime for optimal performance
 
 ### Docker
@@ -206,14 +218,14 @@ Access the application at `http://localhost:8080`
 │   ├── lib/            # Utilities and helpers
 │   ├── pages/          # Main application pages
 │   └── types/          # TypeScript type definitions
-├── supabase/           # Database schema and migrations
+├── database/           # Database schema and migrations
 ├── public/             # Static assets
 └── scripts/            # Utility scripts
 ```
 
 ## Database Schema
 
-The application uses Supabase (PostgreSQL) with the following data model:
+The application uses Neon (PostgreSQL) with the following data model:
 
 | Table | Description |
 | ------- | ------------- |

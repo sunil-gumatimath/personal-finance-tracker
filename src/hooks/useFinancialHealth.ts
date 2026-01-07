@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
+import { query } from '@/lib/database'
 import { useAuth } from '@/contexts/AuthContext'
 import { startOfMonth, endOfMonth, subMonths, format } from 'date-fns'
 import type { Transaction, Budget, Goal, Account } from '@/types'
@@ -50,15 +50,31 @@ export function useFinancialHealth() {
 
             // Fetch all necessary data
             const [
-                { data: transactions },
-                { data: budgets },
-                { data: goals },
-                { data: accounts }
+                { rows: transactions },
+                { rows: budgets },
+                { rows: goals },
+                { rows: accounts }
             ] = await Promise.all([
-                supabase.from('transactions').select('*, category:categories(*)').eq('user_id', user.id).gte('date', startOfCurrMonth).lte('date', endOfCurrMonth),
-                supabase.from('budgets').select('*, category:categories(*)').eq('user_id', user.id),
-                supabase.from('goals').select('*').eq('user_id', user.id),
-                supabase.from('accounts').select('*').eq('user_id', user.id)
+                query<Transaction>(`
+                    SELECT 
+                        t.*,
+                        row_to_json(c.*) as category
+                    FROM transactions t
+                    LEFT JOIN categories c ON t.category_id = c.id
+                    WHERE t.user_id = $1
+                    AND t.date >= $2
+                    AND t.date <= $3
+                `, [user.id, startOfCurrMonth, endOfCurrMonth]),
+                query<Budget & { category: { name: string } }>(`
+                    SELECT 
+                        b.*,
+                        row_to_json(c.*) as category
+                    FROM budgets b
+                    LEFT JOIN categories c ON b.category_id = c.id
+                    WHERE b.user_id = $1
+                `, [user.id]),
+                query<Goal>(`SELECT * FROM goals WHERE user_id = $1`, [user.id]),
+                query<Account>(`SELECT * FROM accounts WHERE user_id = $1`, [user.id])
             ])
 
             const typedTransactions = (transactions || []) as Transaction[]
@@ -67,8 +83,8 @@ export function useFinancialHealth() {
             const typedAccounts = (accounts || []) as Account[]
 
             // 1. Savings Rate Calculation
-            const income = typedTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0)
-            const expenses = typedTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
+            const income = typedTransactions.filter(t => t.type === 'income').reduce((sum: number, t) => sum + t.amount, 0)
+            const expenses = typedTransactions.filter(t => t.type === 'expense').reduce((sum: number, t) => sum + t.amount, 0)
             const savingsRate = income > 0 ? Math.max(0, (income - expenses) / income) : 0
 
             // 2. Budget Adherence
@@ -95,13 +111,14 @@ export function useFinancialHealth() {
 
             // Fetch last 3 months expenses to average
             const threeMonthsAgo = format(subMonths(startOfMonth(now), 3), 'yyyy-MM-dd')
-            const { data: pastTransactions } = await supabase
-                .from('transactions')
-                .select('amount')
-                .eq('user_id', user.id)
-                .eq('type', 'expense')
-                .gte('date', threeMonthsAgo)
-                .lt('date', startOfCurrMonth)
+            const { rows: pastTransactions } = await query<{ amount: number }>(`
+                SELECT amount 
+                FROM transactions 
+                WHERE user_id = $1 
+                AND type = 'expense'
+                AND date >= $2
+                AND date < $3
+            `, [user.id, threeMonthsAgo, startOfCurrMonth])
 
             const pastExpenses = (pastTransactions || []).reduce((sum, t) => sum + t.amount, 0)
             const avgMonthlyExpenses = pastExpenses > 0 ? pastExpenses / 3 : (expenses > 0 ? expenses : 2000)

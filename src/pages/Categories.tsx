@@ -19,7 +19,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase'
+import { query, insertRecord, updateRecord, deleteRecord } from '@/lib/database'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 import type { Category } from '@/types'
@@ -54,15 +54,13 @@ export function Categories() {
         }
 
         try {
-            const { data, error } = await supabase
-                .from('categories')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('type')
-                .order('name')
+            const { rows } = await query<Category>(`
+                SELECT * FROM categories
+                WHERE user_id = $1
+                ORDER BY type, name
+            `, [user.id])
 
-            if (error) throw error
-            setCategories(data || [])
+            setCategories(rows || [])
         } catch (error) {
             console.error('Error fetching categories:', error)
             toast.error('Failed to load categories')
@@ -89,16 +87,10 @@ export function Categories() {
             }
 
             if (editingCategory) {
-                const { error } = await supabase
-                    .from('categories')
-                    .update(categoryData)
-                    .eq('id', editingCategory.id)
-
-                if (error) throw error
+                await updateRecord('categories', editingCategory.id, categoryData)
                 toast.success('Category updated successfully')
             } else {
-                const { error } = await supabase.from('categories').insert(categoryData)
-                if (error) throw error
+                await insertRecord('categories', categoryData)
                 toast.success('Category created successfully')
             }
 
@@ -113,8 +105,7 @@ export function Categories() {
 
     const handleDelete = async (id: string) => {
         try {
-            const { error } = await supabase.from('categories').delete().eq('id', id)
-            if (error) throw error
+            await deleteRecord('categories', id)
             toast.success('Category deleted')
             fetchCategories()
         } catch (error) {

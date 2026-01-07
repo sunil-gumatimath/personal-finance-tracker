@@ -2,7 +2,7 @@
 
 A premium, AI-powered personal finance management platform designed for clarity and growth. Track expenses, manage portfolios, and achieve financial goals with sophisticated design, intelligent insights, and an intuitive user experience.
 
-> 📖 **New to the app?** Check out [HowToUse.md](./HowToUse.md) for a comprehensive user guide.
+> **New to the app?** Check out [HowToUse.md](./HowToUse.md) for a comprehensive user guide.
 
 ## Features
 

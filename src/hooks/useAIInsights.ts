@@ -142,7 +142,7 @@ export function useAIInsights() {
 
                     Return ONLY a JSON array:
                     [{"type": "coaching" | "kudo", "title": "Title", "description": "Description"}]
-                    No markdown, no extra text.
+                    No markdown, no extra text, and NO emojis.
                 `
 
                 try {

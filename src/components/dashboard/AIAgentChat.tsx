@@ -206,6 +206,7 @@ ALWAYS format all monetary values using ${currency} symbol and format. For examp
 4. If asked about balance, calculate totals from the accounts data
 5. Be encouraging and positive while being honest about financial health
 6. Suggest actionable next steps when appropriate
+7. DO NOT use any emojis in your responses.
             `
 
             const response = await generateFinancialAdvice(context, apiKey)
@@ -279,7 +280,7 @@ ALWAYS format all monetary values using ${currency} symbol and format. For examp
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+                            className="h-7 px-2 text-xs text-muted-foreground"
                             onClick={clearHistory}
                         >
                             Clear

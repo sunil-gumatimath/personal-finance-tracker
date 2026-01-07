@@ -2,6 +2,8 @@
 
 A premium, AI-powered personal finance management platform designed for clarity and growth. Track expenses, manage portfolios, and achieve financial goals with sophisticated design, intelligent insights, and an intuitive user experience.
 
+> 📖 **New to the app?** Check out [HowToUse.md](./HowToUse.md) for a comprehensive user guide.
+
 ## Features
 
 ### AI-Powered Intelligence
@@ -92,56 +94,60 @@ A premium, AI-powered personal finance management platform designed for clarity 
 - Bun (Latest version)
 - A Supabase account
 
-## Installation
+## Quick Start
 
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
-   cd personal-finance-tracker
+   git clone https://github.com/sunil-gumatimath/Personal-Finance-Tracker.git
+   cd Personal-Finance-Tracker
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
    ```bash
    bun install
    ```
 
-3. Environment Setup:
-   Create a .env file in the root directory:
-   ```bash
+3. **Environment Setup:**
+
+   Create a `.env` file in the root directory:
+   ```env
    VITE_SUPABASE_URL=your_supabase_project_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 
-4. Adding Your Gemini API Key:
-   - Visit Google AI Studio.
-   - Sign in with your Google account.
-   - Create an API Key and copy it.
-   - Add it in Settings > AI Integration within the application.
+4. **Database Setup:**
+   - Create a new project in [Supabase](https://supabase.com)
+   - Execute `supabase/database.sql` in your Supabase SQL Editor
+   - After your first login, run `SELECT seed_my_data();` to populate demo data
 
-5. Database Initialization:
-   - Execute supabase/database.sql in your Supabase SQL Editor.
-   - Run `SELECT seed_my_data();` after your first login to populate the dashboard with demonstration data.
+5. **AI Integration (Optional):**
+   - Visit [Google AI Studio](https://aistudio.google.com)
+   - Create an API Key
+   - Add it in **Settings > AI Integration** within the app
 
-## Development
+6. **Start Development:**
+   ```bash
+   bun run dev
+   ```
 
+## Development Commands
+
+**Start development server:**
 ```bash
 bun run dev
 ```
 
-## Type Checking
-
+**Type checking:**
 ```bash
 bun run typecheck
 ```
 
-## Linting
-
+**Linting:**
 ```bash
 bun run lint
 ```
 
-## Building for Production
-
+**Build for production:**
 ```bash
 bun run build
 ```
@@ -169,29 +175,62 @@ Note: AI features require a Gemini API key. Add it in Settings > AI Integration.
 
 ## Deployment
 
-### Vercel
-The project is optimized for deployment on Vercel using Bun. Ensure your build settings use Bun for the fastest and most reliable deployment.
+### Vercel (Recommended)
+
+The project is optimized for deployment on Vercel:
+
+1. Push your code to GitHub
+2. Import the repository in [Vercel](https://vercel.com)
+3. Configure environment variables:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. Deploy with Bun runtime for optimal performance
 
 ### Docker
-Build and run with Docker Compose for production-grade hosting:
+
+Build and run with Docker Compose:
+
 ```bash
 docker-compose up --build
 ```
-The application will be accessible at http://localhost:8080.
+
+Access the application at `http://localhost:8080`
+
+## Project Structure
+
+```
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── contexts/       # React Context providers
+│   ├── hooks/          # Custom React hooks
+│   ├── lib/            # Utilities and helpers
+│   ├── pages/          # Main application pages
+│   └── types/          # TypeScript type definitions
+├── supabase/           # Database schema and migrations
+├── public/             # Static assets
+└── scripts/            # Utility scripts
+```
 
 ## Database Schema
 
-The application uses the following data model:
+The application uses Supabase (PostgreSQL) with the following data model:
 
-- **profiles**: User profiles with currency preferences and personal information.
-- **accounts**: Financial accounts (checking, savings, credit, investment, cash) with balances.
-- **categories**: Transaction categories for income and expenses with custom colors and icons.
-- **transactions**: Financial transactions with support for recurring entries and categorization.
-- **budgets**: Spending limits per category with weekly, monthly, or yearly periods.
-- **goals**: Savings goals with target amounts, deadlines, and progress tracking.
+| Table | Description |
+| ------- | ------------- |
+| **profiles** | User profiles with currency preferences and personal information |
+| **accounts** | Financial accounts (checking, savings, credit, investment, cash) with balances |
+| **categories** | Transaction categories for income and expenses with custom colors and icons |
+| **transactions** | Financial transactions with support for recurring entries and categorization |
+| **budgets** | Spending limits per category with weekly, monthly, or yearly periods |
+| **goals** | Savings goals with target amounts, deadlines, and progress tracking |
 
-All tables include Row Level Security (RLS) policies to ensure data privacy.
+**Security:** All tables include Row Level Security (RLS) policies to ensure data privacy and user isolation.
+
+## Support
+
+For questions or issues, please open an issue on GitHub or check out the [HowToUse.md](./HowToUse.md) guide.
 
 ## License
 
 This project is free and open-source software licensed under the MIT License.
+

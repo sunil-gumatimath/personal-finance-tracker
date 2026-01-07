@@ -7,8 +7,7 @@ import {
     SpendingChart,
     BudgetOverview,
     AICoach,
-    FinancialHealthScore,
-    BadgesGrid
+    FinancialHealthScore
 } from '@/components/dashboard'
 import { query } from '@/lib/database'
 import { useAuth } from '@/contexts/AuthContext'
@@ -328,16 +327,15 @@ export function Dashboard() {
                 />
             </div>
 
-            {/* Financial Health & Gamification Row */}
-            <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-[2fr_3fr]">
+            {/* Health Score & Spending Flow Row */}
+            <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-2">
                 <FinancialHealthScore data={healthData} loading={healthLoading} />
-                <BadgesGrid badges={healthData?.badges || []} />
+                <BudgetOverview spendingByCategory={spendingByCategory} />
             </div>
 
-            {/* Charts Row - 70/30 Split */}
-            <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-[7fr_3fr]">
+            {/* Monthly Trends Chart */}
+            <div className="w-full">
                 <SpendingChart data={monthlyTrends} />
-                <BudgetOverview spendingByCategory={spendingByCategory} />
             </div>
 
             {/* Recent Transactions */}

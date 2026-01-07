@@ -33,7 +33,9 @@ RUN bun run build
 # ==============================================
 # Stage 2: Serve with Nginx (production)
 # ==============================================
-FROM nginx:alpine AS production
+# Use the official unprivileged Nginx image so the container can run as non-root
+# and bind to an unprivileged port (we use 8080 in nginx.conf).
+FROM nginxinc/nginx-unprivileged:alpine AS production
 
 # Add labels for container identification
 LABEL maintainer="Personal Finance Tracker"
@@ -46,24 +48,17 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # Copy custom Nginx config for SPA routing
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S appgroup && \
-    adduser -u 1001 -S appuser -G appgroup && \
-    chown -R appuser:appgroup /usr/share/nginx/html && \
-    chown -R appuser:appgroup /var/cache/nginx && \
-    chown -R appuser:appgroup /var/log/nginx && \
-    touch /var/run/nginx.pid && \
-    chown -R appuser:appgroup /var/run/nginx.pid
+# Provide a tiny HTTP client for the healthcheck
+USER root
+RUN apk add --no-cache curl
+USER 101
 
-# Use non-root user (optional - comment out if causes permission issues)
-# USER appuser
+# Expose unprivileged port (matches nginx.conf)
+EXPOSE 8080
 
-# Expose port 80
-EXPOSE 80
-
-# Health check
+# Health check (use the explicit /health endpoint)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
+    CMD curl -fsS http://localhost:8080/health || exit 1
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

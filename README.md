@@ -8,21 +8,23 @@ A premium, AI-powered personal finance management platform designed for clarity 
 
 ### AI-Powered Intelligence
 - AI Financial Coach: Real-time personalized insights powered by Google Gemini 1.5 Flash, providing spending alerts and actionable coaching tips.
+- Persisted Intelligence: AI-generated financial insights are now stored in the database, providing a consistent coaching history across sessions.
 - Interactive AI Chat: Natural language conversations about your finances with context-aware responses and smart recommendations.
 - Anomaly Detection: Automatic identification of unusual spending patterns and financial outliers.
 
 ### Dashboard Excellence
-- Side-by-Side Analytics: Balanced layout featuring Financial Health Score and Spending Flow (Budget Overview) in a unified view.
-- Real-time Monitoring: Instant updates to savings rate, budget adherence, and emergency fund progress.
-- Actionable Intelligence: AI-generated next steps for improving financial health, now with full currency support.
+- Side-by-Side Analytics: Balanced layout featuring a redesigned Financial Health Score and Spending Flow (Budget Overview) in a unified view.
+- Interactive Monitoring: Instant updates to savings rate, budget adherence, and emergency fund progress with real-time feedback.
+- Actionable Intelligence: AI-generated next steps for improving financial health, integrated with full currency support.
 
 ### Advanced Analytics
 - Intelligence Dashboard: Comprehensive financial overview with interactive Shadcn UI charts including:
   - Income vs Expenses area chart with 6-month trends.
-  - Spending breakdown pie chart with category insights.
+  - Interactive spending breakdown pie chart with category-specific insights.
   - Month-over-month comparison metrics.
   - Dynamic stat cards with percentage changes.
-- Budget Overview: Visual spending flow with category percentages and total spending display.
+- Enhanced Spending Flow: Visual spending breakdown featuring interactive legends, hover-triggered details, and category progress tracking.
+- Health Score Visualization: Advanced animated gauge with score-specific gradients and detailed breakdown tooltips.
 - Activity Calendar: High-fidelity visualization of daily financial events to identify spending patterns.
 - Budget Analytics: Visual progress tracking with threshold alerts and spending forecasts.
 
@@ -58,19 +60,20 @@ A premium, AI-powered personal finance management platform designed for clarity 
 ## Key Highlights
 
 ### Financial Health Score
-- Comprehensive scoring based on three pillars: savings rate (40% weight), budget adherence (30% weight), and emergency fund progress (30% weight).
-- Interactive donut chart visualization with real-time updates.
-- Detailed breakdown modal with actionable improvement steps.
-- Status indicators: Excellent (80+), Good (60-79), Average (40-59), Needs Attention (below 40).
-
-
+- Three-Pillar Scoring: Savings rate (40%), budget adherence (30%), and emergency fund progress (30%).
+- Animated Visualization: Interactive ring progress with dynamic gradients reflecting financial standing.
+- Detailed Breakdown: Comprehensive modal displaying individual pillar performance and month-over-month trends.
+- Action Plan: prioritized, actionable steps to improve financial standing, localized to user currency.
 
 ### Recent Improvements
-- **Balanced Analytics UI**: Redesigned the Dashboard to place Health Score and Spending Flow side-by-side for a more efficient financial overview.
-- **Global Health Metrics**: Fixed currency formatting in Health Score action steps to respect user preferences (INR, USD, etc.).
-- **Streamlined Experience**: Removed gamification elements (Achievements/Badges) to focus on core financial data and AI-driven coaching.
-- **Improved Logo & Branding**: Refined visual identity with a modern, emerald-themed growth-arrow logo and polished typography.
-- **Bun Execution**: Optimized development workflow and build processes using the Bun runtime for sub-second hot-reloads.
+- **Enhanced Financial Health Score**: Redesigned with animated ring progress, interactive metric cards, score history trends, and a detailed breakdown visualization with tooltips.
+- **Advanced Spending Flow**: Implemented interactive legends, category-specific details on hover, animated entry sequences, and budget progress indicators.
+- **Database-Stored AI Insights**: Financial coaching insights are now persisted in the Neon database, ensuring persistence and improved context for growth tips.
+- **Side-by-Side Dashboard**: Refined layout placing Health Score and Spending Flow side-by-side for a more efficient and balanced financial overview.
+- **Global Preference Integration**: Deep integration of currency and regional settings across all analytics and AI insights.
+- **Refined Branding & UX**: Polished typography, emerald-themed visual identity, and removal of gamification elements (badges) to focus on core data.
+- **Clean Documentation**: Updated project documentation to follow a professional, emoji-free standard.
+- **Bun Runtime Optimization**: Fully optimized for Bun, delivering sub-second hot-reloads and efficient build processes.
 
 ## Prerequisites
 

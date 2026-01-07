@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
-// Define replacement types for Supabase types
+// Define types for Auth
 type User = {
     id: string;
     email?: string;

@@ -130,7 +130,7 @@ export function Login() {
 
                 {/* Demo Note */}
                 <p className="text-center text-sm text-muted-foreground">
-                    Running in demo mode? Data persistence requires Supabase setup.
+                    Running in demo mode? Data persistence requires database setup.
                 </p>
             </div>
         </div>

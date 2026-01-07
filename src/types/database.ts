@@ -1,4 +1,4 @@
-// Database types for Supabase
+// Database types for Neon
 
 export interface Profile {
     id: string

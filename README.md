@@ -53,14 +53,13 @@ A premium, AI-powered personal finance management platform designed for clarity 
 | Frontend | React 18, TypeScript, Vite 7 |
 | Styling | Tailwind CSS 4, Shadcn UI (Radix UI) |
 | State Management | React Context API |
-| Routing | React Router DOM 7 |
-| Charts | Shadcn UI Charts (Recharts) |
+| Database | Neon (PostgreSQL) with Serverless Adapter |
 | AI Integration | Google Gemini 1.5 Flash, React Markdown |
-| Backend | Neon (PostgreSQL) |
-| Icons | Lucide React, Hugeicons |
-| Runtime | Bun |
-| PWA | Vite PWA Plugin |
-| Aesthetics | OKLCH Color Model, Refined Cards, Custom Filters |
+| Charts | Shadcn UI Charts (Recharts) |
+| Icons | Hugeicons React, Lucide React |
+| Runtime | Bun 1.x |
+| Deployment | Vercel, Docker & Nginx |
+| Color Model | OKLCH (Modern CSS) |
 
 ## Key Highlights
 
@@ -78,16 +77,14 @@ A premium, AI-powered personal finance management platform designed for clarity 
 - Visual progress indicators for locked badges with completion percentages.
 
 ### Recent Improvements
-- Financial Health Score: Implemented comprehensive health monitoring with gauge visualization and actionable insights.
-- Badges Grid: Added achievement system with progress tracking and unlock mechanics.
-- Budget Overview: Enhanced spending flow visualization with category percentages and top spending identification.
-- Accounts Page Redesign: Migrated to a clean Shadcn-based design with improved header, search, filtering, and sorting capabilities.
-- Enhanced Dashboard Charts: Updated components with smooth animations, interactive tooltips, and premium styling.
-- Refined Settings UI: Horizontal tabs layout with consistent rounded corners and cohesive design language.
-- Mobile Responsive: Fully optimized for all screen sizes with adaptive layouts.
-- AI Integration: Powered by Gemini 1.5 Flash for intelligent financial insights.
-- Improved Logo Design: Modern finance-themed logo with emerald/teal gradient and abstract growth arrow.
-- Bun Optimization: Fully transitioned to Bun for faster development and consistent environment.
+- **Persistent AI Insights**: Migrated from just-in-time generation to database-backed storage for financial insights, ensuring your financial history remains accessible.
+- **Preference Persistence**: User settings (currency, API keys, notifications) are now securely synced to the Neon database JSONB storage.
+- **Data Stability**: Fixed numerical precision issues (NaN) in Financial Health Score and Spending Analytics across all currency formats.
+- **Horizontal Settings UI**: Streamlined preferences management with a clean, tabbed interface for profile, account, and AI settings.
+- **Neon Database Migration**: Fully transitioned from Supabase to Neon for improved serverless database performance and lower latency.
+- **Badges Grid**: Implemented a comprehensive achievement system with dynamic progress tracking and unlock status indicators.
+- **Improved Logo & Branding**: Refined visual identity with a modern, emerald-themed growth-arrow logo and polished typography.
+- **Bun Execution**: Optimized development workflow and build processes using the Bun runtime for sub-second hot-reloads.
 
 ## Prerequisites
 
@@ -176,14 +173,15 @@ The application includes powerful AI-driven insights powered by Google Gemini 1.
 
 ### AI Assistant
 - Natural language conversations about your finances.
-- Context-aware responses based on your actual financial data.
+- **Persistent Memory**: Chat history is preserved across sessions (per browser).
+- **Data-Driven Insights**: Responses are generated based on your real-time transaction history and account balances.
 - Ask questions like:
   - "How much did I spend on dining last month?"
   - "What are my top spending categories?"
   - "Give me tips to save more money."
   - "Am I on track with my budget?"
 
-Note: AI features require a Gemini API key. Add it in Settings > AI Integration.
+Note: AI features require a Gemini API key. Add it in **Settings > Preferences**.
 
 ## Deployment
 
@@ -229,12 +227,14 @@ The application uses Neon (PostgreSQL) with the following data model:
 
 | Table | Description |
 | ------- | ------------- |
-| **profiles** | User profiles with currency preferences and personal information |
+| **profiles** | User profiles with currency preferences and personal information (stored in JSONB) |
 | **accounts** | Financial accounts (checking, savings, credit, investment, cash) with balances |
 | **categories** | Transaction categories for income and expenses with custom colors and icons |
 | **transactions** | Financial transactions with support for recurring entries and categorization |
 | **budgets** | Spending limits per category with weekly, monthly, or yearly periods |
 | **goals** | Savings goals with target amounts, deadlines, and progress tracking |
+| **ai_insights** | Persisted financial insights including anomalies, coaching tips, and kudos |
+| **users** | Core authentication table for secure user management |
 
 **Security:** All tables include Row Level Security (RLS) policies to ensure data privacy and user isolation.
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
+import { query } from '@/lib/database'
 import { useAuth } from '@/contexts/AuthContext'
 import type { Transaction, Category } from '@/types'
 import { startOfMonth, subMonths, format } from 'date-fns'
@@ -61,17 +61,14 @@ export function useAIInsights() {
             const sixMonthsAgo = subMonths(startOfMonth(new Date()), 6)
             const sixMonthsAgoStr = format(sixMonthsAgo, 'yyyy-MM-dd')
 
-            const { data: transactions, error } = await supabase
-                .from('transactions')
-                .select(`
-                    *,
-                    category:categories(*)
-                `)
-                .eq('user_id', user.id)
-                .gte('date', sixMonthsAgoStr)
-                .order('date', { ascending: false })
-
-            if (error) throw error
+            const { rows: transactions } = await query<Transaction>(`
+                SELECT t.*, row_to_json(c.*) as category
+                FROM transactions t
+                LEFT JOIN categories c ON t.category_id = c.id
+                WHERE t.user_id = $1
+                AND t.date >= $2
+                ORDER BY t.date DESC
+            `, [user.id, sixMonthsAgoStr])
 
             const typedTransactions = (transactions || []) as Transaction[]
             const newInsights: Insight[] = []

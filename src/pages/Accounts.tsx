@@ -54,7 +54,7 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase'
+import { query, insertRecord, updateRecord, deleteRecord } from '@/lib/database'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePreferences } from '@/hooks/usePreferences'
 import { cn } from '@/lib/utils'
@@ -81,8 +81,6 @@ const COLORS = [
     { value: '#f97316', name: 'Orange', gradient: 'from-orange-500 to-red-500' },
     { value: '#6366f1', name: 'Indigo', gradient: 'from-indigo-500 to-purple-500' },
 ]
-
-
 
 type SortOption = 'name' | 'balance' | 'type' | 'created'
 
@@ -121,15 +119,11 @@ export function Accounts() {
         }
 
         try {
-            const { data, error } = await supabase
-                .from('accounts')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('is_active', { ascending: false })
-                .order('name')
-
-            if (error) throw error
-            setAccounts(data || [])
+            const { rows } = await query<Account>(
+                `SELECT * FROM accounts WHERE user_id = $1 ORDER BY is_active DESC, name ASC`,
+                [user.id]
+            )
+            setAccounts(rows || [])
         } catch (error) {
             console.error('Error fetching accounts:', error)
             toast.error('Failed to load accounts')
@@ -164,16 +158,10 @@ export function Accounts() {
             }
 
             if (editingAccount) {
-                const { error } = await supabase
-                    .from('accounts')
-                    .update(accountData)
-                    .eq('id', editingAccount.id)
-
-                if (error) throw error
+                await updateRecord('accounts', editingAccount.id, accountData)
                 toast.success('Account updated successfully')
             } else {
-                const { error } = await supabase.from('accounts').insert(accountData)
-                if (error) throw error
+                await insertRecord('accounts', accountData)
                 toast.success('Account created successfully')
             }
 
@@ -191,12 +179,11 @@ export function Accounts() {
         setAccountToDelete(account)
 
         try {
-            const { count } = await supabase
-                .from('transactions')
-                .select('*', { count: 'exact', head: true })
-                .eq('account_id', account.id)
-
-            setLinkedTransactionsCount(count || 0)
+            const { rows } = await query<{ count: string }>(
+                'SELECT COUNT(*) as count FROM transactions WHERE account_id = $1',
+                [account.id]
+            )
+            setLinkedTransactionsCount(parseInt(rows[0]?.count || '0', 10))
         } catch (error) {
             console.error('Error checking transactions:', error)
             setLinkedTransactionsCount(0)
@@ -214,16 +201,10 @@ export function Accounts() {
             // If there are linked transactions, we need to handle them
             if (linkedTransactionsCount > 0) {
                 // Delete associated transactions first
-                const { error: txError } = await supabase
-                    .from('transactions')
-                    .delete()
-                    .eq('account_id', accountToDelete.id)
-
-                if (txError) throw txError
+                await query('DELETE FROM transactions WHERE account_id = $1', [accountToDelete.id])
             }
 
-            const { error } = await supabase.from('accounts').delete().eq('id', accountToDelete.id)
-            if (error) throw error
+            await deleteRecord('accounts', accountToDelete.id)
 
             toast.success(`"${accountToDelete.name}" deleted successfully`)
             fetchAccounts()

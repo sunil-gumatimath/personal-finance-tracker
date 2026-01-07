@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { generateFinancialAdvice } from '@/lib/gemini'
 import { useAuth } from '@/contexts/AuthContext'
-import { supabase } from '@/lib/supabase'
+import { query } from '@/lib/database'
 import { PREFERENCES_KEY } from '@/types/preferences'
 import Markdown from 'react-markdown'
 
@@ -159,22 +159,27 @@ export function AIAgentChat() {
         lastApiCall = Date.now()
 
         try {
-            const { data: recentTransactions } = await supabase
-                .from('transactions')
-                .select('type, amount, date, description, category:categories(name)')
-                .eq('user_id', user.id)
-                .order('date', { ascending: false })
-                .limit(20)
+            const { rows: recentTransactions } = await query(`
+                SELECT t.type, t.amount, t.date, t.description, c.name as category_name
+                FROM transactions t
+                LEFT JOIN categories c ON t.category_id = c.id
+                WHERE t.user_id = $1
+                ORDER BY t.date DESC
+                LIMIT 20
+            `, [user.id])
 
-            const { data: accounts } = await supabase
-                .from('accounts')
-                .select('name, balance, type')
-                .eq('user_id', user.id)
+            const { rows: accounts } = await query(`
+                SELECT name, balance, type
+                FROM accounts
+                WHERE user_id = $1
+            `, [user.id])
 
-            const { data: budgets } = await supabase
-                .from('budgets')
-                .select('name, amount, spent, period, category:categories(name)')
-                .eq('user_id', user.id)
+            const { rows: budgets } = await query(`
+                SELECT b.amount, b.period, c.name as category_name
+                FROM budgets b
+                LEFT JOIN categories c ON b.category_id = c.id
+                WHERE b.user_id = $1
+            `, [user.id])
 
             const context = `
 You are a helpful, friendly financial advisor assistant. The user is asking about their personal finances.

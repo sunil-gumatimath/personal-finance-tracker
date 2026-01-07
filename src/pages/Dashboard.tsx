@@ -10,7 +10,7 @@ import {
     FinancialHealthScore,
     BadgesGrid
 } from '@/components/dashboard'
-import { supabase } from '@/lib/supabase'
+import { query } from '@/lib/database'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePreferences } from '@/hooks/usePreferences'
 import type { Transaction, DashboardStats, SpendingByCategory, MonthlyTrend, Category } from '@/types'
@@ -73,53 +73,56 @@ export function Dashboard() {
                 const sixMonthsAgoStr = getLocalDateString(sixMonthsAgo)
 
                 // 1. Fetch recent transactions with expanded details
-                const { data: transactions } = await supabase
-                    .from('transactions')
-                    .select(`
-                        *,
-                        category:categories(*),
-                        account:accounts(*)
-                    `)
-                    .eq('user_id', user.id)
-                    .order('date', { ascending: false })
-                    .limit(10)
+                const { rows: transactions } = await query<Transaction>(`
+                    SELECT 
+                        t.*,
+                        row_to_json(c.*) as category,
+                        row_to_json(a.*) as account
+                    FROM transactions t
+                    LEFT JOIN categories c ON t.category_id = c.id
+                    LEFT JOIN accounts a ON t.account_id = a.id
+                    WHERE t.user_id = $1
+                    ORDER BY t.date DESC
+                    LIMIT 10
+                `, [user.id])
 
                 if (transactions) {
-                    setRecentTransactions(transactions as Transaction[])
+                    setRecentTransactions(transactions)
                 }
 
                 // 2. Fetch both current and last month data for comparison
-                const { data: twoMonthData } = await supabase
-                    .from('transactions')
-                    .select(`
-                        type,
-                        amount,
-                        date,
-                        category:categories(name, color)
-                    `)
-                    .eq('user_id', user.id)
-                    .gte('date', startOfLastMonthStr)
+                const { rows: twoMonthData } = await query<{ type: string; amount: number; date: string; category: Category }>(`
+                    SELECT 
+                        t.type,
+                        t.amount,
+                        t.date,
+                        row_to_json(c.*) as category
+                    FROM transactions t
+                    LEFT JOIN categories c ON t.category_id = c.id
+                    WHERE t.user_id = $1
+                    AND t.date >= $2
+                `, [user.id, startOfLastMonthStr])
 
                 if (twoMonthData) {
                     // Split into current and last month
-                    const currentMonthData = twoMonthData.filter(t => t.date >= startOfMonthStr)
-                    const lastMonthData = twoMonthData.filter(t => t.date >= startOfLastMonthStr && t.date < startOfMonthStr)
+                    const currentMonthData = twoMonthData.filter((t) => t.date >= startOfMonthStr)
+                    const lastMonthData = twoMonthData.filter((t) => t.date >= startOfLastMonthStr && t.date < startOfMonthStr)
 
                     // Calculate current month stats
                     const income = currentMonthData
                         .filter((t) => t.type === 'income')
-                        .reduce((sum, t) => sum + t.amount, 0)
+                        .reduce((sum: number, t) => sum + t.amount, 0)
                     const expenses = currentMonthData
                         .filter((t) => t.type === 'expense')
-                        .reduce((sum, t) => sum + t.amount, 0)
+                        .reduce((sum: number, t) => sum + t.amount, 0)
 
                     // Calculate last month stats for comparison
                     const lastMonthIncome = lastMonthData
                         .filter((t) => t.type === 'income')
-                        .reduce((sum, t) => sum + t.amount, 0)
+                        .reduce((sum: number, t) => sum + t.amount, 0)
                     const lastMonthExpenses = lastMonthData
                         .filter((t) => t.type === 'expense')
-                        .reduce((sum, t) => sum + t.amount, 0)
+                        .reduce((sum: number, t) => sum + t.amount, 0)
 
                     // Calculate percentage changes
                     const incomeChange = lastMonthIncome > 0
@@ -148,9 +151,9 @@ export function Dashboard() {
                     currentMonthData
                         .filter((t) => t.type === 'expense' && t.category)
                         .forEach((t) => {
-                            const category = Array.isArray(t.category) ? t.category[0] : t.category
-                            const catName = (category as Category)?.name || 'Uncategorized'
-                            const catColor = (category as Category)?.color || '#94a3b8'
+                            const category = t.category
+                            const catName = category?.name || 'Uncategorized'
+                            const catColor = category?.color || '#94a3b8'
                             const current = categoryMap.get(catName) || { amount: 0, color: catColor }
                             categoryMap.set(catName, {
                                 amount: current.amount + t.amount,
@@ -171,12 +174,13 @@ export function Dashboard() {
                 }
 
                 // 3. Fetch 6-month trend data
-                const { data: trendData } = await supabase
-                    .from('transactions')
-                    .select('type, amount, date')
-                    .eq('user_id', user.id)
-                    .gte('date', sixMonthsAgoStr)
-                    .order('date', { ascending: true })
+                const { rows: trendData } = await query<{ type: string; amount: number; date: string }>(`
+                    SELECT type, amount, date 
+                    FROM transactions 
+                    WHERE user_id = $1 
+                    AND date >= $2
+                    ORDER BY date ASC
+                `, [user.id, sixMonthsAgoStr])
 
                 if (trendData) {
                     const monthsMap = new Map<string, { income: number; expenses: number }>()
@@ -204,7 +208,8 @@ export function Dashboard() {
                     const orderedMonths: string[] = []
                     for (let i = 5; i >= 0; i--) {
                         const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-                        orderedMonths.push(d.toLocaleString('default', { month: 'short' }))
+                        const orderedMonths_push = d.toLocaleString('default', { month: 'short' })
+                        orderedMonths.push(orderedMonths_push)
                     }
 
                     const monthlyTrendData: MonthlyTrend[] = orderedMonths.map(month => ({
@@ -217,14 +222,13 @@ export function Dashboard() {
                 }
 
                 // 4. Fetch accounts for total balance
-                const { data: accounts } = await supabase
-                    .from('accounts')
-                    .select('balance')
-                    .eq('user_id', user.id)
-                    .eq('is_active', true)
+                const { rows: accounts } = await query<{ balance: number }>(
+                    'SELECT balance FROM accounts WHERE user_id = $1 AND is_active = true',
+                    [user.id]
+                )
 
                 if (accounts) {
-                    const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0)
+                    const totalBalance = accounts.reduce((sum: number, a) => sum + parseFloat(a.balance as any), 0)
                     setStats((prev) => ({ ...prev, totalBalance }))
                 }
             } catch (error) {

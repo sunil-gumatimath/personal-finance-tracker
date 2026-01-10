@@ -28,12 +28,15 @@ A premium, AI-powered personal finance management platform designed for clarity 
 - Activity Calendar: High-fidelity visualization of daily financial events to identify spending patterns.
 - Budget Analytics: Visual progress tracking with threshold alerts and spending forecasts.
 
+
 ### Core Financial Management
 - Transaction Engine: Precision recording of income, expenses, and internal transfers with CSV export and recurring logic support.
 - Budgeting System: Define and monitor spending limits per category with visual progress analytics.
 - Wealth Goals: Set sophisticated savings targets with deadline-based tracking and contribution history.
+- Debts & Loans: Comprehensive debt tracking with payment history, interest calculations, payoff projections, and smart payoff strategies (Snowball and Avalanche methods).
 - Unified Account View: Seamless management of diverse asset types including Checking, Savings, Credit, Investments, and Cash.
 - Adaptive Categories: Flexible, hierarchical category system with customizable visual identifiers.
+
 
 ### Premium User Experience
 - Eye Protection Light Mode: Specialized warm-ivory theme designed to reduce blue light strain and provide a comfortable reading experience.
@@ -65,6 +68,7 @@ A premium, AI-powered personal finance management platform designed for clarity 
 - Action Plan: prioritized, actionable steps to improve financial standing, localized to user currency.
 
 ### Recent Improvements
+- Debts & Loans Module: Comprehensive debt tracking with support for mortgages, car loans, student loans, credit cards, and more. Includes payment recording, interest calculations, payoff projections, and Snowball/Avalanche strategy comparison.
 - Enhanced Financial Health Score: Redesigned with animated ring progress, interactive metric cards, score history trends, and a detailed breakdown visualization with tooltips.
 - Advanced Spending Flow: Implemented interactive legends, category-specific details on hover, animated entry sequences, and budget progress indicators.
 - Database-Stored AI Insights: Financial coaching insights are now persisted in the Neon database, ensuring persistence and improved context for growth tips.
@@ -209,6 +213,8 @@ The application uses Neon (PostgreSQL) with the following data model:
 | **transactions** | Financial transactions with support for recurring entries and categorization |
 | **budgets** | Spending limits per category with weekly, monthly, or yearly periods |
 | **goals** | Savings goals with target amounts, deadlines, and progress tracking |
+| **debts** | Debt and loan tracking with interest rates, payment schedules, and payoff projections |
+| **debt_payments** | Payment history for debts with principal/interest breakdown |
 | **ai_insights** | Persisted financial insights including anomalies, coaching tips, and kudos |
 | **users** | Core authentication table for secure user management |
 

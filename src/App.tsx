@@ -10,6 +10,7 @@ import {
   Categories,
   Accounts,
   Goals,
+  Debts,
   Settings,
   Login,
   Signup,
@@ -89,6 +90,7 @@ function AppRoutes() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/budgets" element={<Budgets />} />
         <Route path="/goals" element={<Goals />} />
+        <Route path="/debts" element={<Debts />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/settings" element={<Settings />} />

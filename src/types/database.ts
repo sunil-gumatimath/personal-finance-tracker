@@ -105,3 +105,52 @@ export interface MonthlyTrend {
     income: number
     expenses: number
 }
+
+export interface Debt {
+    id: string
+    user_id: string
+    name: string
+    type: 'mortgage' | 'car_loan' | 'student_loan' | 'personal_loan' | 'credit_card' | 'medical' | 'other'
+    original_amount: number
+    current_balance: number
+    interest_rate: number
+    minimum_payment: number
+    due_day: number | null
+    start_date: string
+    end_date: string | null
+    lender: string | null
+    notes: string | null
+    color: string
+    icon: string
+    is_active: boolean
+    created_at: string
+    updated_at: string
+}
+
+export interface DebtPayment {
+    id: string
+    debt_id: string
+    user_id: string
+    amount: number
+    principal_amount: number
+    interest_amount: number
+    payment_date: string
+    notes: string | null
+    created_at: string
+    // Joined fields
+    debt?: Debt
+}
+
+export interface DebtPayoffStrategy {
+    name: 'snowball' | 'avalanche'
+    totalInterest: number
+    payoffMonths: number
+    monthlyPayment: number
+    debts: {
+        id: string
+        name: string
+        payoffOrder: number
+        payoffDate: Date
+        totalInterestPaid: number
+    }[]
+}

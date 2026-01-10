@@ -9,6 +9,7 @@ import {
     Target,
     Settings,
     LogOut,
+    CreditCard,
 } from 'lucide-react'
 import {
     Sidebar,
@@ -33,6 +34,7 @@ const navItems = [
     { title: 'Calendar', icon: Calendar, path: '/calendar' },
     { title: 'Budgets', icon: PiggyBank, path: '/budgets' },
     { title: 'Goals', icon: Target, path: '/goals' },
+    { title: 'Debts', icon: CreditCard, path: '/debts' },
     { title: 'Accounts', icon: Wallet, path: '/accounts' },
     { title: 'Categories', icon: Tags, path: '/categories' },
 ]
